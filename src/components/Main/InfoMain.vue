@@ -1,8 +1,6 @@
 <template>
     <header id="portfolio">
-        <a href="#" @click="sidebarOpen">
-            <img src="./../../assets/image/avatar/avatar_1.PNG" class="w3-circle w3-right w3-margin-8 w3-hide-large w3-hover-opacity" style="width: 55px; height: 55px; object-fit: cover;" alt="My protfolio">
-        </a>
+      
         <span class="icon-color w3-button w3-hide-large w3-xxlarge w3-hover-text-grey" @click="sidebarOpen">
             <i class ="fa fa-bars"></i>
         </span>

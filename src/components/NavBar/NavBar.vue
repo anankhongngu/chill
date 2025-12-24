@@ -6,8 +6,7 @@
             <a href="#" @click="sidebarClose()" class="icon-close icon-color w3-hide-large w3-right w3-padding w3-hover-grey" title="close menu">
                 <i class="fa fa-remove"></i>
             </a>
-            <!-- <a href="/"><img src="./../../assets/image/avatar/avatar_1.PNG" style="width: 50%;" class="w3-round" alt="My protfolio"></a> -->
-            <!-- <br><br> -->
+           
             <h4 class="title--n"><b>LÊ TRƯỜNG AN</b></h4>
             <p class="text-slogan hidden">khongbaogionhanminhngu</p>
         </div>  
@@ -19,7 +18,7 @@
             <router-link :to="`/resume`" :class="{ active: $route.path === '/resume' }" class="text-nav w3-bar-item w3-button w3-padding">    
                 <i class="fa fa-address-card-o fa-fw w3-margin-right"></i>RESUME
             </router-link>
-
+ 
             <a href="mailto:truongan2700@gmail.com" class="text-nav w3-bar-item w3-button w3-padding">
                 <i class="fa fa-envelope w3-margin-right"></i>CONTACT
             </a>
