@@ -18,7 +18,7 @@
                     <i class="fa fa-photo w3-margin-right"></i>Manga
                 </button>
             </div>
-        </div> 
+        </div>  
     </header>
     <div v-if="activeTab === 'theme'" class="tab-content">
         <Theme/>
