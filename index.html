@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music App</title>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="{{ 'favicon.png' | asset_url }}" type="image/png" />
+  <meta name='viewport' content="width=device-width,initial-scale=1,shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="HandheldFriendly" content="true">
+  <meta name="revisit-after" content="1 day" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   
+</head>
+<body class ="bg--gray w3-content">
+  <div id="app"></div>
+  <a href="javascript:" id="return-to-top" onclick="smoothscroll();return false;">
+    <i class="fa fa-rocket" aria-hidden="true"></i>
+  </a>
+  <script type="application/javascript">
+    function smoothscroll(){
+        var currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        if (currentScroll > 0) {
+            window.requestAnimationFrame(smoothscroll);
+            window.scrollTo (0,currentScroll - (currentScroll/5));
+        }
+    };
+  </script>
+  <script type="module" src="/src/main.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html> 
