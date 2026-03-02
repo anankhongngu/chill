@@ -20,7 +20,7 @@
                     <i class="fa fa-photo w3-margin-right"></i>Manga
                 </button>
                 <button @click="activeTab='film'" :class="{ active: activeTab === 'film' }" class="w3-button text-cate">
-                    <i class="fa fa-play w3-margin-right"></i>Film
+                    <i class="fa fa-play w3-margin-right"></i>Movie
                 </button>
             </div>
         </div> 
