@@ -124,6 +124,18 @@ export default {
                 this.hls.loadSource(url);
                 this.hls.attachMedia(video);
             }
+            video.addEventListener('ended', this.playNextEpisode);
+        },
+        playNextEpisode() {
+            const currentIndex = this.episodes.findIndex(
+                ep => ep.slug === this.currentEpisode.slug
+            );
+
+            const nextEpisode = this.episodes[currentIndex + 1];
+
+            if (nextEpisode) {
+                this.selectEpisode(nextEpisode);
+            }
         },
         selectEpisode(ep) {
             if (this.currentEpisode?.slug === ep.slug) return;
