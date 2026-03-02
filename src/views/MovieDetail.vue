@@ -15,8 +15,13 @@
           </p>
 
           <div class="buttons">
-            <button class="play-btn" @click="playFirstEpisode">
-              ▶ Phát ngay
+            <button 
+            class="play-btn"
+            @click="playFirstEpisode"
+            :disabled="isPlaying"
+            :class="{ disabled: isPlaying }"
+            >
+            ▶ {{ isPlaying ? 'Đang phát' : 'Phát ngay' }}
             </button>
           </div>
 
@@ -37,18 +42,20 @@
 
     <!-- EPISODES -->
     <div class="episodes" v-if="episodes.length">
-      <h2>Danh sách tập</h2>
-
-      <div class="episode-row">
-        <div
-          v-for="ep in episodes"
-          :key="ep.slug"
-          class="episode-card"
-          @click="selectEpisode(ep)"
-        >
-          <div class="episode-number">{{ ep.name }}</div>
+        <h2>Danh sách tập</h2>
+        <div class="episode-row"> 
+            <div
+                v-for="ep in episodes"
+                :key="ep.slug"
+                class="episode-card"
+                :class="{ active: currentEpisode?.slug === ep.slug }"
+                @click="selectEpisode(ep)"
+                >
+                <div class="episode-number">
+                    {{ ep.name }}
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
   </div>
@@ -59,77 +66,83 @@ import Hls from "hls.js";
 import { buildImageMovieUrl } from '@/utils/imageHelper';
 
 export default {
-  data() {
-    return {
-      movie: null,
-      episodes: [],
-      currentEpisode: null,
-      hls: null
-    };
-  },
-
-  methods: {
-    async fetchMovie() {
-      const slug = this.$route.params.slug;
-
-        const response = await axios.get(
-            `https://ophim1.com/v1/api/phim/${slug}`
-        );
-
-        const data = response.data.data;
-        const imageDomain = response.data?.data?.APP_DOMAIN_CDN_IMAGE || '';
-
-        this.movie = {
-            name: data.item.name,
-            content: data.item.content,
-            year: data.item.year,
-            time: data.item.time,
-            episode_current: data.item.episode_current,
-            poster: buildImageMovieUrl(imageDomain, data.thumb_url || data.poster_url)
+    data() {
+        return {
+            movie: null,
+            episodes: [],
+            currentEpisode: null,
+            hls: null
         };
+    },
+    computed: {
+        isPlaying() {
+            return !!this.currentEpisode;
+        }
+    },
+    methods: {
+        async fetchMovie() {
+            const slug = this.$route.params.slug;
 
-      if (data.item.episodes?.length) {
-        this.episodes = data.item.episodes[0].server_data;
-      }
+            const response = await axios.get(
+                `https://ophim1.com/v1/api/phim/${slug}`
+            );
+
+            const data = response.data.data;
+            const imageDomain = response.data?.data?.APP_DOMAIN_CDN_IMAGE || '';
+
+            this.movie = {
+                name: data.item.name,
+                content: data.item.content,
+                year: data.item.year,
+                time: data.item.time,
+                episode_current: data.item.episode_current,
+                poster: buildImageMovieUrl(imageDomain, data.thumb_url || data.poster_url)
+            };
+
+            if (data.item.episodes?.length) {
+                this.episodes = data.item.episodes[0].server_data;
+            }
+        },
+
+        playFirstEpisode() {
+            if (this.episodes.length) {
+                this.selectEpisode(this.episodes[0]);
+            }
+        },
+
+        loadVideo(url) {
+            const video = this.$refs.videoPlayer;
+
+            if (this.hls) {
+                this.hls.destroy();
+            }
+
+            if (video.canPlayType("application/vnd.apple.mpegurl")) {
+                video.src = url;
+            } else if (Hls.isSupported()) {
+                this.hls = new Hls();
+                this.hls.loadSource(url);
+                this.hls.attachMedia(video);
+            }
+        },
+        selectEpisode(ep) {
+            if (this.currentEpisode?.slug === ep.slug) return;
+
+            this.currentEpisode = ep;
+
+            this.$nextTick(() => {
+                this.loadVideo(ep.link_m3u8);
+            });
+        } 
     },
 
-    playFirstEpisode() {
-      if (this.episodes.length) {
-        this.selectEpisode(this.episodes[0]);
-      }
+    mounted() {
+        this.fetchMovie();
     },
 
-    selectEpisode(ep) {
-      this.currentEpisode = ep;
-      this.$nextTick(() => {
-        this.loadVideo(ep.link_m3u8);
-      });
-    },
-
-    loadVideo(url) {
-      const video = this.$refs.videoPlayer;
-
-      if (this.hls) {
-        this.hls.destroy();
-      }
-
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = url;
-      } else if (Hls.isSupported()) {
-        this.hls = new Hls();
-        this.hls.loadSource(url);
-        this.hls.attachMedia(video);
-      }
+    beforeUnmount() {
+        if (this.hls) this.hls.destroy();
     }
-  },
-
-  mounted() {
-    this.fetchMovie();
-  },
-
-  beforeUnmount() {
-    if (this.hls) this.hls.destroy();
-  }
 };
 </script>
 <style scoped>
@@ -227,5 +240,17 @@ export default {
 
 .episode-number {
   font-weight: bold;
+}
+.play-btn.disabled {
+  background: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Episode active */
+.episode-card.active {
+  background: #e50914;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.7);
 }
 </style>
